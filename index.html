@@ -1,483 +1,92 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>استمارة تفاصيل التصميم - Design Brief</title>
-<!-- html2pdf library for PDF generation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<style>
-  :root {
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --bg-color: #f1f5f9;
-    --card-bg: #ffffff;
-    --text-color: #0f172a;
-    --border-color: #cbd5e1;
-  }
-
-  * {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  }
-
-  body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 20px 12px;
-    line-height: 1.6;
-  }
-
-  .container {
-    max-width: 680px;
-    margin: 0 auto;
-  }
-
-  .header {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    color: white;
-    padding: 24px 20px;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
-    margin-bottom: 20px;
-  }
-
-  .header h1 {
-    margin: 0 0 8px 0;
-    font-size: 22px;
-  }
-
-  .header p {
-    margin: 0;
-    font-size: 14px;
-    opacity: 0.9;
-  }
-
-  .card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  }
-
-  .card-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--primary);
-    margin-top: 0;
-    margin-bottom: 16px;
-    border-bottom: 2px solid #e0e7ff;
-    padding-bottom: 8px;
-  }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  .form-group:last-child {
-    margin-bottom: 0;
-  }
-
-  label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 6px;
-    font-size: 14px;
-    color: #334155;
-  }
-
-  .required-asterisk {
-    color: #ef4444;
-    margin-right: 2px;
-  }
-
-  input[type="text"], select, textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1.5px solid var(--border-color);
-    border-radius: 10px;
-    font-size: 14px;
-    transition: all 0.2s;
-    outline: none;
-    background-color: #f8fafc;
-  }
-
-  input[type="text"]:focus, select:focus, textarea:focus {
-    border-color: var(--primary);
-    background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 90px;
-  }
-
-  .color-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 8px;
-  }
-
-  .color-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #f8fafc;
-    border: 1.5px solid var(--border-color);
-    padding: 8px 10px;
-    border-radius: 10px;
-    cursor: pointer;
-    user-select: none;
-    font-size: 13px;
-    transition: all 0.2s;
-  }
-
-  .color-pill:hover {
-    border-color: var(--primary);
-  }
-
-  .color-pill input[type="checkbox"] {
-    accent-color: var(--primary);
-    width: 16px;
-    height: 16px;
-  }
-
-  .swatch {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 1px solid rgba(0,0,0,0.2);
-    display: inline-block;
-  }
-
-  .style-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .style-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    background: #f8fafc;
-    border: 1.5px solid var(--border-color);
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .style-box input {
-    accent-color: var(--primary);
-    width: 18px;
-    height: 18px;
-  }
-
-  .btn-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .pdf-btn {
-    width: 100%;
-    background: #4f46e5;
-    color: white;
-    border: none;
-    padding: 16px;
-    border-radius: 14px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .pdf-btn:hover {
-    background: #4338ca;
-  }
-
-  .wa-btn {
-    width: 100%;
-    background: #25d366;
-    color: white;
-    border: none;
-    padding: 16px;
-    border-radius: 14px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 10px 20px -5px rgba(37, 211, 102, 0.4);
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    text-decoration: none;
-  }
-
-  .wa-btn:hover {
-    background: #1da851;
-  }
-
-  /* Hidden PDF Printable Template */
-  #pdfTemplate {
-    display: none;
-    padding: 30px;
-    background: #ffffff;
-    color: #0f172a;
-    font-family: Arial, sans-serif;
-  }
-
-  #pdfTemplate h2 {
-    color: #4f46e5;
-    border-bottom: 2px solid #4f46e5;
-    padding-bottom: 8px;
-    margin-bottom: 20px;
-    font-size: 20px;
-  }
-
-  .pdf-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-
-  .pdf-table th, .pdf-table td {
-    border: 1px solid #cbd5e1;
-    padding: 10px 14px;
-    text-align: right;
-    font-size: 14px;
-  }
-
-  .pdf-table th {
-    background-color: #f1f5f9;
-    color: #334155;
-    width: 35%;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استمارة تحميل الملفات</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #0d1117; color: #c9d1d9; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; max-width: 450px; width: 100%; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .brand { font-size: 24px; font-weight: 800; color: #58a6ff; margin-bottom: 6px; }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        label { display: block; font-size: 13px; margin-bottom: 6px; color: #8b949e; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; outline: none; }
+        input:focus { border-color: #58a6ff; }
+        .btn-submit { width: 100%; padding: 14px; background: #238636; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; }
+        
+        #optionsScreen { display: none; text-align: center; }
+        .success-msg { color: #3fb950; font-weight: bold; margin-bottom: 15px; font-size: 16px; }
+        .btn-action { width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; color: #fff; font-size: 14px; }
+        .btn-download { background: #1f6beb; }
+        .btn-whatsapp { background: #25D366; }
+        .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #484f58; }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="header">
-    <h1>✨ استمارة تفاصيل التصميم</h1>
-    <p>يرجى ملء البيانات وتحميل ملف الـ PDF ثم إرساله للديزاينر عبر الواتساب</p>
-  </div>
-
-  <form id="briefForm" onsubmit="event.preventDefault(); generatePDFandSend();">
-    <!-- 1. البيانات الشخصية -->
     <div class="card">
-      <div class="card-title">👤 1. البيانات الشخصية</div>
-      <div class="form-group">
-        <label>اسم العميل / الشركة <span class="required-asterisk">*</span></label>
-        <input type="text" id="clientName" placeholder="أدخل اسمك أو اسم الشركة" required>
-      </div>
-      <div class="form-group">
-        <label>رقم الواتساب <span class="required-asterisk">*</span></label>
-        <input type="text" id="clientPhone" placeholder="01xxxxxxxx" required>
-      </div>
-    </div>
-
-    <!-- 2. نوع التصميم -->
-    <div class="card">
-      <div class="card-title">🎨 2. نوع التصميم المطلوب</div>
-      <div class="form-group">
-        <label>اختر نوع التصميم <span class="required-asterisk">*</span></label>
-        <select id="designType" required>
-          <option value="">-- اضغط للاختيار --</option>
-          <option value="بوست سوشيال ميديا">بوست سوشيال ميديا (Social Media Post)</option>
-          <option value="كارت شخصي">كارت شخصي (Business Card)</option>
-          <option value="بانر / رول أب">بانر إعلاني / رول أب (Banner / Roll-up)</option>
-          <option value="لوجو وهوية بصريّة">لوجو / هوية بصريّة (Logo & Branding)</option>
-          <option value="بروشور / فلاير">بروشور / فلاير (Flyer / Brochure)</option>
-          <option value="نوع آخر">تصميم آخر</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- 3. الألوان المفضلة -->
-    <div class="card">
-      <div class="card-title">🎨 3. الألوان المفضلة <span class="required-asterisk">*</span> (اختر لون واحد على الأقل)</div>
-      <div class="color-grid">
-        <label class="color-pill"><input type="checkbox" name="colors" value="أحمر"> <span class="swatch" style="background:#ef4444;"></span> أحمر</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="أزرق"> <span class="swatch" style="background:#3b82f6;"></span> أزرق</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="أخضر"> <span class="swatch" style="background:#10b981;"></span> أخضر</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="أصفر"> <span class="swatch" style="background:#f59e0b;"></span> أصفر</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="بنفسجي"> <span class="swatch" style="background:#8b5cf6;"></span> بنفسجي</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="وردي"> <span class="swatch" style="background:#ec4899;"></span> وردي</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="أسود"> <span class="swatch" style="background:#000000;"></span> أسود</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="أبيض"> <span class="swatch" style="background:#ffffff;"></span> أبيض</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="برتقالي"> <span class="swatch" style="background:#f97316;"></span> برتقالي</label>
-        <label class="color-pill"><input type="checkbox" name="colors" value="ذهبي"> <span class="swatch" style="background:#d4af37;"></span> ذهبي</label>
-      </div>
-      <div class="form-group" style="margin-top: 12px;">
-        <label>ألوان أخرى خاصة (اختياري):</label>
-        <input type="text" id="extraColors" placeholder="مثال: كحلي، درجات النود...">
-      </div>
-    </div>
-
-    <!-- 4. مواصفات الخطوط -->
-    <div class="card">
-      <div class="card-title">✏️ 4. مواصفات الخطوط والنصوص</div>
-      <div class="form-group">
-        <label>حجم الخط الأساسي <span class="required-asterisk">*</span></label>
-        <select id="fontSize" required>
-          <option value="">-- اختر حجم الخط --</option>
-          <option value="متوسط">متوسط (العادي)</option>
-          <option value="كبير">كبير</option>
-          <option value="كبير جداً">كبير جداً</option>
-          <option value="صغير">صغير</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>لون الخط المفضّل <span class="required-asterisk">*</span></label>
-        <select id="fontColor" required>
-          <option value="">-- اختر لون الخط --</option>
-          <option value="حسب رؤية الديزاينر">حسب رؤية الديزاينر</option>
-          <option value="أبيض">أبيض</option>
-          <option value="أسود">أسود</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>ستايل وشكل الخط <span class="required-asterisk">*</span> (اختر ستايل واحد على الأقل)</label>
-        <div class="style-options">
-          <label class="style-box">
-            <input type="checkbox" name="fontStyles" value="خط عريض (Bold)">
-            <strong style="font-size: 15px;">خط عريض (Bold)</strong>
-          </label>
-          <label class="style-box">
-            <input type="checkbox" name="fontStyles" value="خط منحني / مائل (Italic)">
-            <span style="font-style: italic; font-size: 15px;">خط منحني / مائل (Italic)</span>
-          </label>
-          <label class="style-box">
-            <input type="checkbox" name="fontStyles" value="خط كلاسيكي / رسمي">
-            <span style="font-family: serif; font-size: 15px;">خط كلاسيكي / رسمي (Classic)</span>
-          </label>
-          <label class="style-box">
-            <input type="checkbox" name="fontStyles" value="خط عصري / حديث">
-            <span style="font-family: sans-serif; font-weight: 500;">خط عصري / حديث (Modern)</span>
-          </label>
+        <div id="formScreen">
+            <div class="header">
+                <div class="brand">استمارة التحميل</div>
+                <p style="font-size: 13px; color: #8b949e;">يرجى ملء البيانات للحصول على الملف</p>
+            </div>
+            <form id="mainForm" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" required placeholder="أدخل اسمك الكريم">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف / الواتساب</label>
+                    <input type="tel" required placeholder="01xxxxxxxxx">
+                </div>
+                <button type="submit" class="btn-submit">إرسال وتأكيد</button>
+            </form>
         </div>
-      </div>
+
+        <div id="optionsScreen">
+            <div class="header">
+                <div class="brand">تم التأكيد</div>
+                <div class="success-msg">✓ تم حفظ البيانات بنجاح!</div>
+                <p style="font-size: 13px; color: #8b949e; margin-bottom: 20px;">اختر الآن الإجراء المناسب لك:</p>
+            </div>
+
+            <a href="design-file.png" download="Design_File.png" class="btn-action btn-download">
+                📥 تحميل الملف مباشر على الجهاز
+            </a>
+
+            <button class="btn-action btn-whatsapp" onclick="shareToWhatsApp()">
+                📲 إرسال / مشاركة عبر واتساب
+            </button>
+        </div>
+
+        <div class="footer">
+            جميع الحقوق محفوظة &copy; 2026
+        </div>
     </div>
 
-    <!-- 5. النصوص والملاحظات -->
-    <div class="card">
-      <div class="card-title">📝 5. النصوص والملاحظات</div>
-      <div class="form-group">
-        <label>النص المطلوب كتابته داخل التصميم <span class="required-asterisk">*</span></label>
-        <textarea id="designText" placeholder="اكتب العنوان، التفاصيل، وبيانات التواصل المطلوبة داخل التصميم..." required></textarea>
-      </div>
-      <div class="form-group">
-        <label>ملاحظات إضافية / Additional Comments (اختياري):</label>
-        <textarea id="additionalComments" placeholder="أي ملاحظات أو تفاصيل إضافية تحب توضيحها..."></textarea>
-      </div>
-    </div>
+    <script>
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            document.getElementById('formScreen').style.display = 'none';
+            document.getElementById('optionsScreen').style.display = 'block';
+        }
 
-    <div class="btn-group">
-      <button type="submit" class="pdf-btn">
-        📄 تحميل استمارة التصميم كـ PDF
-      </button>
-    </div>
-  </form>
-</div>
+        function shareToWhatsApp() {
+            const shareData = {
+                title: 'رابط الملف',
+                text: 'تفضل، هذا هو رابط الملف الخاص بك:',
+                url: window.location.href
+            };
 
-<!-- Template used for PDF rendering -->
-<div id="pdfTemplate">
-  <h2>📄 ملخص استمارة تفاصيل التصميم (Design Brief)</h2>
-  <table class="pdf-table">
-    <tr><th>اسم العميل / الشركة</th><td id="pdfName"></td></tr>
-    <tr><th>رقم الواتساب</th><td id="pdfPhone"></td></tr>
-    <tr><th>نوع التصميم المطلوب</th><td id="pdfType"></td></tr>
-    <tr><th>الألوان المفضلة</th><td id="pdfColors"></td></tr>
-    <tr><th>حجم الخط المفضّل</th><td id="pdfFontSize"></td></tr>
-    <tr><th>لون الخط المفضّل</th><td id="pdfFontColor"></td></tr>
-    <tr><th>ستايل وشكل الخط</th><td id="pdfFontStyles"></td></tr>
-    <tr><th>النص المطلوب داخل التصميم</th><td id="pdfText" style="white-space: pre-wrap;"></td></tr>
-    <tr><th>ملاحظات إضافية</th><td id="pdfComments" style="white-space: pre-wrap;"></td></tr>
-  </table>
-  <p style="font-size: 12px; color: #64748b; text-align: center; margin-top: 20px;">
-    تم إنشاء هذه الاستمارة آلياً - يرجى إرسال هذا الملف مباشرة للديزاينر عبر الواتساب.
-  </p>
-</div>
-
-<script>
-  function generatePDFandSend() {
-    const name = document.getElementById('clientName').value.trim();
-    const phone = document.getElementById('clientPhone').value.trim();
-    const type = document.getElementById('designType').value;
-    const fontSize = document.getElementById('fontSize').value;
-    const fontColor = document.getElementById('fontColor').value;
-    const text = document.getElementById('designText').value.trim();
-    const comments = document.getElementById('additionalComments').value.trim();
-
-    // التحقق من الألوان
-    let selectedColors = [];
-    document.querySelectorAll('input[name="colors"]:checked').forEach(el => selectedColors.push(el.value));
-    const extraColors = document.getElementById('extraColors').value.trim();
-    if (extraColors) selectedColors.push(extraColors);
-
-    if (selectedColors.length === 0) {
-      alert('يرجى اختيار لون واحد على الأقل من قائمة الألوان.');
-      return;
-    }
-
-    // التحقق من ستايل الخط
-    let selectedStyles = [];
-    document.querySelectorAll('input[name="fontStyles"]:checked').forEach(el => selectedStyles.push(el.value));
-
-    if (selectedStyles.length === 0) {
-      alert('يرجى اختيار ستايل خط واحد على الأقل.');
-      return;
-    }
-
-    // تعبئة البيانات في نموذج الـ PDF
-    document.getElementById('pdfName').innerText = name;
-    document.getElementById('pdfPhone').innerText = phone;
-    document.getElementById('pdfType').innerText = type;
-    document.getElementById('pdfColors').innerText = selectedColors.join('، ');
-    document.getElementById('pdfFontSize').innerText = fontSize;
-    document.getElementById('pdfFontColor').innerText = fontColor;
-    document.getElementById('pdfFontStyles').innerText = selectedStyles.join('، ');
-    document.getElementById('pdfText').innerText = text;
-    document.getElementById('pdfComments').innerText = comments || 'لا يوجد';
-
-    // إظهار قالب الـ PDF مؤقتاً للطباعة
-    const element = document.getElementById('pdfTemplate');
-    element.style.display = 'block';
-
-    const opt = {
-      margin:       10,
-      filename:     `Design-Brief-${name.replace(/\s+/g, '_')}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // توليد وتنزيل ملف PDF تلقائياً
-    html2pdf().set(opt).from(element).save().then(() => {
-      element.style.display = 'none';
-
-      // فتح الواتساب تلقائياً بعد التنزيل
-      const designerPhoneNumber = "201097654933";
-      const waMessage = `مرحباً، تم ملء استمارة التصميم بنجاح وتحميل ملف الـ PDF (%D8%A7%D8%B3%D8%AA%D9%85%D8%A7%D8%B1%D8%A9_%D8%A7%D9%84%D8%AA%D8%B5%D9%85%D9%8A%D9%85). مرفق مع الرسالة ملف الـ PDF الخاص بالطلب.`;
-      
-      alert('تم تنزيل ملف الـ PDF بنجاح على جهازك! سيتم فتح الواتساب الآن لتقوم بإرفاق الملف وإرساله.');
-      
-      window.open(`https://wa.me/${designerPhoneNumber}?text=${encodeURIComponent(`مرحباً، قمت بملء استمارة التصميم باسم (${name}) وتم تنزيل ملف الـ PDF. سأقوم بإرفاقه الآن.`)}`, '_blank');
-    });
-  }
-</script>
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+            } else {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.text + " " + shareData.url)}`, '_blank');
+            }
+        }
+    </script>
 
 </body>
 </html>
