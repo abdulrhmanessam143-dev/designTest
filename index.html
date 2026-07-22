@@ -7,33 +7,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background: #0d1117; color: #c9d1d9; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; max-width: 650px; width: 100%; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* خلفية بيضاء ونظيفة */
+        body { background: #f4f6f9; color: #1f2937; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; max-width: 650px; width: 100%; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         
-        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #30363d; padding-bottom: 15px; }
-        .brand { font-size: 24px; font-weight: 800; color: #58a6ff; margin-bottom: 6px; }
-        .section-title { font-size: 15px; font-weight: bold; color: #58a6ff; margin: 20px 0 12px 0; border-right: 4px solid #58a6ff; padding-right: 8px; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; }
+        .brand { font-size: 24px; font-weight: 800; color: #2563eb; margin-bottom: 6px; }
+        .section-title { font-size: 15px; font-weight: bold; color: #2563eb; margin: 20px 0 12px 0; border-right: 4px solid #2563eb; padding-right: 8px; }
 
         .row { display: flex; gap: 12px; flex-wrap: wrap; }
         .col { flex: 1; min-width: 220px; }
 
         .form-group { margin-bottom: 15px; text-align: right; }
-        label { display: block; font-size: 13px; margin-bottom: 6px; color: #8b949e; font-weight: bold; }
-        .req { color: #f85149; font-weight: bold; }
+        label { display: block; font-size: 13px; margin-bottom: 6px; color: #4b5563; font-weight: bold; }
+        .req { color: #dc2626; font-weight: bold; }
         
-        input, textarea, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; outline: none; }
+        input, textarea, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #d1d5db; background: #ffffff; color: #1f2937; font-size: 14px; outline: none; }
         select { cursor: pointer; }
-        input[type="color"] { height: 45px; padding: 4px; cursor: pointer; }
-        input:focus, textarea:focus, select:focus { border-color: #58a6ff; }
+        input[type="color"] { height: 45px; padding: 4px; cursor: pointer; background: #fff; }
+        input:focus, textarea:focus, select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
-        .btn-submit { width: 100%; padding: 16px; background: #238636; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; transition: 0.2s; }
-        .btn-submit:hover { background: #2ea043; }
+        .btn-submit { width: 100%; padding: 16px; background: #16a34a; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; transition: 0.2s; }
+        .btn-submit:hover { background: #15803d; }
         
-        #successSection { display: none; margin-top: 20px; text-align: center; background: #1c2128; padding: 15px; border-radius: 8px; border: 1px solid #3fb950; }
+        #successSection { display: none; margin-top: 20px; text-align: center; background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #86efac; }
         .btn-whatsapp { width: 100%; padding: 14px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; text-decoration: none; display: block; }
-        .footer { margin-top: 25px; text-align: center; font-size: 12px; color: #484f58; }
+        .footer { margin-top: 25px; text-align: center; font-size: 12px; color: #9ca3af; }
 
-        /* تنسيق خاص للطباعة والـ PDF عشان ما يطلعش فاضي */
+        /* قالب للطباعة والـ PDF */
         .pdf-template { display: none; background: #fff; color: #000; padding: 20px; font-family: Arial, sans-serif; }
         .pdf-template h2 { color: #000; border-bottom: 2px solid #333; padding-bottom: 5px; margin-bottom: 15px; }
         .pdf-item { margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
@@ -46,13 +47,13 @@
     <div class="card">
         <div class="header">
             <div class="brand">استمارة مواصفات التصميم</div>
-            <p style="font-size: 13px; color: #8b949e;">يرجى ملء كافة البيانات الإجبارية لتوليد ملف الـ PDF</p>
+            <p style="font-size: 13px; color: #6b7280;">يرجى ملء كافة البيانات الإجبارية لتوليد ملف الـ PDF</p>
         </div>
 
         <form id="designForm" onsubmit="generatePDF(event)">
             
             <!-- 1. البيانات الأساسية -->
-            <div class="section-title">📌 بيانات الأساسية</div>
+            <div class="section-title">📌 البيانات الأساسية</div>
             <div class="row">
                 <div class="col form-group">
                     <label>اسم العميل / الشركة <span class="req">*</span></label>
@@ -64,7 +65,7 @@
                 </div>
             </div>
 
-            <!-- 2. الألوان الإجبارية (4 مدخلات ألوان) -->
+            <!-- 2. الألوان الإجبارية -->
             <div class="section-title">🎨 ألوان الهوية واللوجو (إجباري)</div>
             <div class="row">
                 <div class="col form-group">
@@ -87,7 +88,7 @@
                 </div>
             </div>
 
-            <!-- 3. القوائم المنسدلة للخطوط Dropdowns -->
+            <!-- 3. اختيار الخطوط -->
             <div class="section-title">✍️ اختيار الخطوط والمقاسات</div>
             <div class="row">
                 <div class="col form-group">
@@ -133,14 +134,14 @@
         </form>
 
         <div id="successSection">
-            <p style="color: #3fb950; font-weight: bold; margin-bottom: 10px;">✓ تم تحميل ملف الـ PDF بنجاح!</p>
+            <p style="color: #16a34a; font-weight: bold; margin-bottom: 10px;">✓ تم تحميل ملف الـ PDF بنجاح!</p>
             <button class="btn-whatsapp" onclick="sendViaWhatsApp()">📲 إرسال التفاصيل عبر الواتساب</button>
         </div>
 
         <div class="footer">جميع الحقوق محفوظة &copy; 2026</div>
     </div>
 
-    <!-- قالب جاهز للطباعة والـ PDF حصراً للحد من الخلل -->
+    <!-- قالب جاهز للطباعة والـ PDF -->
     <div id="pdfRenderArea" class="pdf-template">
         <h2 id="pdfHeaderTitle">استمارة مواصفات المشروع - Design Brief</h2>
         <div class="pdf-item"><strong>اسم العميل:</strong> <span id="pClient"></span></div>
@@ -165,7 +166,6 @@
         function generatePDF(e) {
             e.preventDefault();
 
-            // 1. نقل البيانات إلى قالب الـ PDF المخصص
             document.getElementById('pClient').innerText = document.getElementById('clientName').value;
             document.getElementById('pPhone').innerText = document.getElementById('clientPhone').value;
             
@@ -192,7 +192,6 @@
             btn.innerText = 'جاري توليد الـ PDF... ⏳';
             btn.disabled = true;
 
-            // 2. إظهار منطقة الطباعة مؤقتاً لتوليد الـ PDF
             const element = document.getElementById('pdfRenderArea');
             element.style.display = 'block';
 
@@ -204,7 +203,6 @@
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // 3. تصدير الـ PDF وإخفاء منطقة الطباعة مجدداً
             html2pdf().set(opt).from(element).save().then(() => {
                 element.style.display = 'none';
                 btn.innerText = '✓ تم تحميل الـ PDF بنجاح';
