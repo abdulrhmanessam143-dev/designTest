@@ -15,7 +15,9 @@
         input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; outline: none; }
         input:focus { border-color: #58a6ff; }
         .btn-submit { width: 100%; padding: 14px; background: #238636; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; }
+        .btn-submit:hover { background: #2ea043; }
         
+        /* شاشة التحميل تظهر بعد الإرسال فقط */
         #optionsScreen { display: none; text-align: center; }
         .success-msg { color: #3fb950; font-weight: bold; margin-bottom: 15px; font-size: 16px; }
         .btn-action { width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; color: #fff; font-size: 14px; }
@@ -27,35 +29,38 @@
 <body>
 
     <div class="card">
+        <!-- 1. شاشة إدخال البيانات -->
         <div id="formScreen">
             <div class="header">
                 <div class="brand">استمارة التحميل</div>
-                <p style="font-size: 13px; color: #8b949e;">يرجى ملء البيانات للحصول على الملف</p>
+                <p style="font-size: 13px; color: #8b949e;">يرجى ملء البيانات أولاً لتتمكن من تحميل الملف</p>
             </div>
-            <form id="mainForm" onsubmit="handleFormSubmit(event)">
+            <form id="mainForm" onsubmit="saveAndSubmitData(event)">
                 <div class="form-group">
                     <label>الاسم بالكامل</label>
-                    <input type="text" required placeholder="أدخل اسمك الكريم">
+                    <input type="text" id="userName" required placeholder="أدخل اسمك الكريم">
                 </div>
                 <div class="form-group">
                     <label>رقم الهاتف / الواتساب</label>
-                    <input type="tel" required placeholder="01xxxxxxxxx">
+                    <input type="tel" id="userPhone" required placeholder="01xxxxxxxxx">
                 </div>
-                <button type="submit" class="btn-submit">إرسال وتأكيد</button>
+                <button type="submit" class="btn-submit">حفظ البيانات واختيار التحميل 📥</button>
             </form>
         </div>
 
+        <!-- 2. شاشة خيارات التنزيل (لا تفتح إلا بعد ملء الاستمارة) -->
         <div id="optionsScreen">
             <div class="header">
-                <div class="brand">تم التأكيد</div>
-                <div class="success-msg">✓ تم حفظ البيانات بنجاح!</div>
-                <p style="font-size: 13px; color: #8b949e; margin-bottom: 20px;">اختر الآن الإجراء المناسب لك:</p>
+                <div class="brand">تم حفظ البيانات بنجاح</div>
+                <div class="success-msg">✓ شكراً لك، يمكنك الآن تحميل أو إرسال الملف</div>
             </div>
 
+            <!-- خيار التحميل المباشر -->
             <a href="design-file.png" download="Design_File.png" class="btn-action btn-download">
                 📥 تحميل الملف مباشر على الجهاز
             </a>
 
+            <!-- خيار الإرسال عبر واتساب -->
             <button class="btn-action btn-whatsapp" onclick="shareToWhatsApp()">
                 📲 إرسال / مشاركة عبر واتساب
             </button>
@@ -67,23 +72,32 @@
     </div>
 
     <script>
-        function handleFormSubmit(e) {
+        function saveAndSubmitData(e) {
             e.preventDefault();
+            
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+
+            // حفظ البيانات في متصفح المستخدم (مؤقتاً)
+            localStorage.setItem('userData', JSON.stringify({ name, phone }));
+
+            // إخفاء الاستمارة وإظهار زر التحميل والواتساب
             document.getElementById('formScreen').style.display = 'none';
             document.getElementById('optionsScreen').style.display = 'block';
         }
 
         function shareToWhatsApp() {
-            const shareData = {
-                title: 'رابط الملف',
-                text: 'تفضل، هذا هو رابط الملف الخاص بك:',
-                url: window.location.href
-            };
+            const savedData = JSON.parse(localStorage.getItem('userData')) || {};
+            const textMsg = `مرحباً، تم تسجيل البيانات:\n- الاسم: ${savedData.name || ''}\n- الهاتف: ${savedData.phone || ''}\n\nرابط الملف: ${window.location.href}`;
 
             if (navigator.share) {
-                navigator.share(shareData).catch(() => {});
+                navigator.share({
+                    title: 'بيانات الملف',
+                    text: textMsg,
+                    url: window.location.href
+                }).catch(() => {});
             } else {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.text + " " + shareData.url)}`, '_blank');
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textMsg)}`, '_blank');
             }
         }
     </script>
