@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استمارة مواصفات التصميم والهوية - Design Brief</title>
-    <!-- مكتبة html2pdf لتوليد الـ PDF -->
+    <title>استمارة مواصفات التصميم - Design Brief</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
@@ -12,148 +11,211 @@
         .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; max-width: 650px; width: 100%; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
         .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #30363d; padding-bottom: 15px; }
-        .brand { font-size: 26px; font-weight: 800; color: #58a6ff; margin-bottom: 6px; }
-        .section-title { font-size: 16px; font-weight: bold; color: #58a6ff; margin: 20px 0 10px 0; border-right: 4px solid #58a6ff; padding-right: 8px; }
+        .brand { font-size: 24px; font-weight: 800; color: #58a6ff; margin-bottom: 6px; }
+        .section-title { font-size: 15px; font-weight: bold; color: #58a6ff; margin: 20px 0 12px 0; border-right: 4px solid #58a6ff; padding-right: 8px; }
 
-        .row { display: flex; gap: 15px; flex-wrap: wrap; }
-        .col { flex: 1; min-width: 240px; }
+        .row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .col { flex: 1; min-width: 220px; }
 
         .form-group { margin-bottom: 15px; text-align: right; }
         label { display: block; font-size: 13px; margin-bottom: 6px; color: #8b949e; font-weight: bold; }
+        .req { color: #f85149; font-weight: bold; }
+        
         input, textarea, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; outline: none; }
-        input[type="color"] { height: 45px; padding: 5px; cursor: pointer; }
+        select { cursor: pointer; }
+        input[type="color"] { height: 45px; padding: 4px; cursor: pointer; }
         input:focus, textarea:focus, select:focus { border-color: #58a6ff; }
         
         .btn-submit { width: 100%; padding: 16px; background: #238636; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; transition: 0.2s; }
         .btn-submit:hover { background: #2ea043; }
         
         #successSection { display: none; margin-top: 20px; text-align: center; background: #1c2128; padding: 15px; border-radius: 8px; border: 1px solid #3fb950; }
-        .btn-whatsapp { width: 100%; padding: 14px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .btn-whatsapp { width: 100%; padding: 14px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; text-decoration: none; display: block; }
         .footer { margin-top: 25px; text-align: center; font-size: 12px; color: #484f58; }
+
+        /* تنسيق خاص للطباعة والـ PDF عشان ما يطلعش فاضي */
+        .pdf-template { display: none; background: #fff; color: #000; padding: 20px; font-family: Arial, sans-serif; }
+        .pdf-template h2 { color: #000; border-bottom: 2px solid #333; padding-bottom: 5px; margin-bottom: 15px; }
+        .pdf-item { margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+        .pdf-item strong { color: #222; }
+        .color-box { display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-right: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="card" id="pdfContent">
+    <div class="card">
         <div class="header">
-            <div class="brand">استمارة الهوية وتفاصيل التصميم</div>
-            <p style="font-size: 13px; color: #8b949e;">يرجى تحديد ألوان اللوجو والخطوط والتفاصيل الفنية للمشروع</p>
+            <div class="brand">استمارة مواصفات التصميم</div>
+            <p style="font-size: 13px; color: #8b949e;">يرجى ملء كافة البيانات الإجبارية لتوليد ملف الـ PDF</p>
         </div>
 
-        <form id="designForm" onsubmit="handleFormSubmit(event)">
+        <form id="designForm" onsubmit="generatePDF(event)">
             
-            <!-- 1. بيانات العميل والمشروع -->
+            <!-- 1. البيانات الأساسية -->
             <div class="section-title">📌 بيانات الأساسية</div>
             <div class="row">
                 <div class="col form-group">
-                    <label>اسم العميل / الشركة</label>
-                    <input type="text" id="clientName" required placeholder="مثال: FPT Egypt">
+                    <label>اسم العميل / الشركة <span class="req">*</span></label>
+                    <input type="text" id="clientName" required placeholder="أدخل الاسم">
                 </div>
                 <div class="col form-group">
-                    <label>رقم الهاتف / الواتساب</label>
+                    <label>رقم الهاتف / الواتساب <span class="req">*</span></label>
                     <input type="tel" id="clientPhone" required placeholder="01xxxxxxxxx">
                 </div>
             </div>
 
-            <!-- 2. ألوان الهوية واللوجو -->
-            <div class="section-title">🎨 ألوان اللوجو والهوية البصرية</div>
+            <!-- 2. الألوان الإجبارية (4 مدخلات ألوان) -->
+            <div class="section-title">🎨 ألوان الهوية واللوجو (إجباري)</div>
             <div class="row">
                 <div class="col form-group">
-                    <label>اللون الرئيسي (Primary Color)</label>
-                    <input type="color" id="primaryColor" value="#58a6ff">
+                    <label>1. اللون الأساسي <span class="req">*</span></label>
+                    <input type="color" id="cPrimary" value="#1877f2" required>
                 </div>
                 <div class="col form-group">
-                    <label>اللون الثانوي (Secondary Color)</label>
-                    <input type="color" id="secondaryColor" value="#238636">
+                    <label>2. اللون الثانوي <span class="req">*</span></label>
+                    <input type="color" id="cSecondary" value="#42b72a" required>
                 </div>
             </div>
-            <div class="form-group">
-                <label>كود الألوان المخصصة (HEX / RGB / ملاحظات الألوان)</label>
-                <input type="text" id="colorNotes" placeholder="مثال: #161b22 أو ألوان درجات الأزرق والبرتقالي">
+            <div class="row">
+                <div class="col form-group">
+                    <label>3. لون الخلفية <span class="req">*</span></label>
+                    <input type="color" id="cBg" value="#ffffff" required>
+                </div>
+                <div class="col form-group">
+                    <label>4. لون النصوص <span class="req">*</span></label>
+                    <input type="color" id="cText" value="#050505" required>
+                </div>
             </div>
 
-            <!-- 3. تفاصيل الخطوط والنصوص -->
-            <div class="section-title">✍️ تفاصيل الخطوط (Typography)</div>
+            <!-- 3. القوائم المنسدلة للخطوط Dropdowns -->
+            <div class="section-title">✍️ اختيار الخطوط والمقاسات</div>
             <div class="row">
                 <div class="col form-group">
-                    <label>اسم الخط المفضل (Font Family)</label>
-                    <input type="text" id="fontFamily" placeholder="مثال: Cairo, Tajawal, Segoe UI">
+                    <label>خط العناوين الرئيسية <span class="req">*</span></label>
+                    <select id="fontTitle" required>
+                        <option value="Cairo">Cairo (كايرو - عصري)</option>
+                        <option value="Tajawal">Tajawal (تجوال - بسيط)</option>
+                        <option value="Amiri">Amiri (أميري - كلاسيك/رسمي)</option>
+                        <option value="Almarai">Almarai (المراعي)</option>
+                        <option value="Arial / Sans-Serif">Arial (إنجليزي/عادي)</option>
+                    </select>
                 </div>
                 <div class="col form-group">
-                    <label>حجم الخط ونمطه (Font Weight / Size)</label>
-                    <select id="fontStyle">
-                        <option value="عادي (Regular)">عادي (Regular)</option>
-                        <option value="عريض (Bold)">عريض (Bold)</option>
-                        <option value="مكتبي رسمي (Formal)">مكتبي رسمي (Formal)</option>
-                        <option value="حديث / عصري (Modern)">حديث / عصري (Modern)</option>
+                    <label>خط النصوص والفقرات <span class="req">*</span></label>
+                    <select id="fontBody" required>
+                        <option value="Tajawal">Tajawal (تجوال)</option>
+                        <option value="Cairo">Cairo (كايرو)</option>
+                        <option value="Segoe UI">Segoe UI (قياسي)</option>
+                        <option value="Open Sans">Open Sans</option>
                     </select>
                 </div>
             </div>
 
-            <!-- 4. تفاصيل العمل والمقاسات -->
-            <div class="section-title">📐 مقاسات وتفاصيل المطلوب</div>
+            <!-- 4. المقاس وتفاصيل الطلب -->
             <div class="row">
                 <div class="col form-group">
-                    <label>نوع التصميم / المنصة</label>
-                    <input type="text" id="designType" placeholder="مثال: سوشيال ميديا، بنر، مطبوعات">
-                </div>
-                <div class="col form-group">
-                    <label>المقاسات (Dimensions)</label>
-                    <input type="text" id="dimensions" placeholder="مثال: 1080x1080 px أو A4">
+                    <label>المقاس المطلوب <span class="req">*</span></label>
+                    <select id="dimensions" required>
+                        <option value="Square (1080x1080 px) - Instagram/FB">مربع (1080x1080) - سوشيال ميديا</option>
+                        <option value="Story (1080x1920 px) - Reels/Story">ستوري (1080x1920) - ريلز/ستوري</option>
+                        <option value="A4 Print Sheet">A4 - مطبوعات ورقية</option>
+                        <option value="Banner / Custom Size">بنر / مقاس خاص</option>
+                    </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>النصوص المكتوبة والشروط الخاصة داخل التصميم</label>
-                <textarea id="projectDetails" rows="4" placeholder="اكتب العنوان الرئيسي، الجمل المكتوبة، وأي ملاحظات إضافية..."></textarea>
+                <label>النصوص المكتوبة والملاحظات <span class="req">*</span></label>
+                <textarea id="projectDetails" rows="4" required placeholder="اكتب العنوان الرئيسي والكلمات المطلوبة داخل التصميم..."></textarea>
             </div>
 
-            <!-- زر التوليد -->
-            <button type="submit" class="btn-submit" id="submitBtn">📄 حفظ وتوليد ملف PDF شامل</button>
+            <button type="submit" class="btn-submit" id="submitBtn">📄 حفظ وتوليد ملف PDF</button>
         </form>
 
-        <!-- يظهر بعد الضغط -->
         <div id="successSection">
-            <p style="color: #3fb950; font-weight: bold; margin-bottom: 10px;">✓ تم توليد ملف الـ PDF وحفظ البيانات بنجاح!</p>
-            <button class="btn-whatsapp" onclick="sendViaWhatsApp()">📲 إرسال الملخص عبر الواتساب</button>
+            <p style="color: #3fb950; font-weight: bold; margin-bottom: 10px;">✓ تم تحميل ملف الـ PDF بنجاح!</p>
+            <button class="btn-whatsapp" onclick="sendViaWhatsApp()">📲 إرسال التفاصيل عبر الواتساب</button>
         </div>
 
-        <div class="footer">
-            جميع الحقوق محفوظة &copy; 2026
+        <div class="footer">جميع الحقوق محفوظة &copy; 2026</div>
+    </div>
+
+    <!-- قالب جاهز للطباعة والـ PDF حصراً للحد من الخلل -->
+    <div id="pdfRenderArea" class="pdf-template">
+        <h2 id="pdfHeaderTitle">استمارة مواصفات المشروع - Design Brief</h2>
+        <div class="pdf-item"><strong>اسم العميل:</strong> <span id="pClient"></span></div>
+        <div class="pdf-item"><strong>رقم الهاتف:</strong> <span id="pPhone"></span></div>
+        <hr style="margin: 10px 0; border: 0.5px solid #ccc;">
+        <div class="pdf-item">
+            <strong>الألوان المختارة:</strong><br>
+            - اللون الأساسي: <span id="pCPrimary"></span> <span id="box1" class="color-box"></span><br>
+            - اللون الثانوي: <span id="pCSecondary"></span> <span id="box2" class="color-box"></span><br>
+            - لون الخلفية: <span id="pCBg"></span> <span id="box3" class="color-box"></span><br>
+            - لون النصوص: <span id="pCText"></span> <span id="box4" class="color-box"></span>
         </div>
+        <hr style="margin: 10px 0; border: 0.5px solid #ccc;">
+        <div class="pdf-item"><strong>خط العناوين:</strong> <span id="pFontTitle"></span></div>
+        <div class="pdf-item"><strong>خط النصوص:</strong> <span id="pFontBody"></span></div>
+        <div class="pdf-item"><strong>المقاس المطلـوب:</strong> <span id="pDim"></span></div>
+        <hr style="margin: 10px 0; border: 0.5px solid #ccc;">
+        <div class="pdf-item"><strong>الملاحظات والنصوص:</strong><br><p id="pDetails" style="white-space: pre-wrap; background: #f9f9f9; padding: 10px; border-radius: 5px;"></p></div>
     </div>
 
     <script>
-        function handleFormSubmit(e) {
+        function generatePDF(e) {
             e.preventDefault();
+
+            // 1. نقل البيانات إلى قالب الـ PDF المخصص
+            document.getElementById('pClient').innerText = document.getElementById('clientName').value;
+            document.getElementById('pPhone').innerText = document.getElementById('clientPhone').value;
             
+            const cp = document.getElementById('cPrimary').value;
+            const cs = document.getElementById('cSecondary').value;
+            const cb = document.getElementById('cBg').value;
+            const ct = document.getElementById('cText').value;
+
+            document.getElementById('pCPrimary').innerText = cp;
+            document.getElementById('box1').style.backgroundColor = cp;
+            document.getElementById('pCSecondary').innerText = cs;
+            document.getElementById('box2').style.backgroundColor = cs;
+            document.getElementById('pCBg').innerText = cb;
+            document.getElementById('box3').style.backgroundColor = cb;
+            document.getElementById('pCText').innerText = ct;
+            document.getElementById('box4').style.backgroundColor = ct;
+
+            document.getElementById('pFontTitle').innerText = document.getElementById('fontTitle').value;
+            document.getElementById('pFontBody').innerText = document.getElementById('fontBody').value;
+            document.getElementById('pDim').innerText = document.getElementById('dimensions').value;
+            document.getElementById('pDetails').innerText = document.getElementById('projectDetails').value;
+
             const btn = document.getElementById('submitBtn');
-            btn.innerText = 'جاري إنشـاء الـ PDF الشامل... ⏳';
+            btn.innerText = 'جاري توليد الـ PDF... ⏳';
             btn.disabled = true;
 
-            const element = document.getElementById('pdfContent');
+            // 2. إظهار منطقة الطباعة مؤقتاً لتوليد الـ PDF
+            const element = document.getElementById('pdfRenderArea');
+            element.style.display = 'block';
+
             const opt = {
-                margin:       8,
-                filename:     `Design_Brief_${Date.now()}.pdf`,
+                margin:       10,
+                filename:     `Design_Brief_${document.getElementById('clientName').value}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
+            // 3. تصدير الـ PDF وإخفاء منطقة الطباعة مجدداً
             html2pdf().set(opt).from(element).save().then(() => {
-                btn.innerText = '✓ تم حفظ وتنزيل الـ PDF الشامل';
+                element.style.display = 'none';
+                btn.innerText = '✓ تم تحميل الـ PDF بنجاح';
                 document.getElementById('successSection').style.display = 'block';
             });
         }
 
         function sendViaWhatsApp() {
-            const client = document.getElementById('clientName').value;
-            const font = document.getElementById('fontFamily').value || 'افتراضي';
-            const design = document.getElementById('designType').value || 'عام';
+            const name = document.getElementById('clientName').value;
             const details = document.getElementById('projectDetails').value;
-
-            const textMsg = `مرحباً، تم تسجيل تفاصيل الـ Brief كاملة:\n\n👤 العميل: ${client}\n✍️ الخط: ${font}\n📐 النوع: ${design}\n📝 الملاحظات:\n${details}`;
-            
+            const textMsg = `مرحباً، تم حفظ تفاصيل Design Brief الخاص بـ (${name}):\n\n📝 الملاحظات:\n${details}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textMsg)}`, '_blank');
         }
     </script>
