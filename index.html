@@ -3,67 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استمارة تحميل الملفات</title>
+    <title>استمارة تفاصيل التصميم - Design Brief</title>
+    <!-- مكتبة html2pdf لتوليد ملف الـ PDF فوراً -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background: #0d1117; color: #c9d1d9; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; max-width: 450px; width: 100%; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .header { text-align: center; margin-bottom: 20px; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; max-width: 550px; width: 100%; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 1px solid #30363d; padding-bottom: 15px; }
         .brand { font-size: 24px; font-weight: 800; color: #58a6ff; margin-bottom: 6px; }
         .form-group { margin-bottom: 15px; text-align: right; }
-        label { display: block; font-size: 13px; margin-bottom: 6px; color: #8b949e; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; outline: none; }
-        input:focus { border-color: #58a6ff; }
-        .btn-submit { width: 100%; padding: 14px; background: #238636; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; }
+        label { display: block; font-size: 13px; margin-bottom: 6px; color: #8b949e; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; outline: none; }
+        input:focus, textarea:focus { border-color: #58a6ff; }
+        .btn-submit { width: 100%; padding: 14px; background: #238636; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 15px; transition: 0.2s; }
         .btn-submit:hover { background: #2ea043; }
         
-        /* شاشة التحميل تظهر بعد الإرسال فقط */
-        #optionsScreen { display: none; text-align: center; }
-        .success-msg { color: #3fb950; font-weight: bold; margin-bottom: 15px; font-size: 16px; }
-        .btn-action { width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; color: #fff; font-size: 14px; }
-        .btn-download { background: #1f6beb; }
-        .btn-whatsapp { background: #25D366; }
+        /* شاشة النجاح والخيارات بعد الإرسال */
+        #successSection { display: none; margin-top: 20px; text-align: center; }
+        .btn-whatsapp { width: 100%; padding: 14px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
         .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #484f58; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <!-- 1. شاشة إدخال البيانات -->
-        <div id="formScreen">
-            <div class="header">
-                <div class="brand">استمارة التحميل</div>
-                <p style="font-size: 13px; color: #8b949e;">يرجى ملء البيانات أولاً لتتمكن من تحميل الملف</p>
-            </div>
-            <form id="mainForm" onsubmit="saveAndSubmitData(event)">
-                <div class="form-group">
-                    <label>الاسم بالكامل</label>
-                    <input type="text" id="userName" required placeholder="أدخل اسمك الكريم">
-                </div>
-                <div class="form-group">
-                    <label>رقم الهاتف / الواتساب</label>
-                    <input type="tel" id="userPhone" required placeholder="01xxxxxxxxx">
-                </div>
-                <button type="submit" class="btn-submit">حفظ البيانات واختيار التحميل 📥</button>
-            </form>
+    <div class="card" id="pdfContent">
+        <div class="header">
+            <div class="brand">استمارة تفاصيل المشروع</div>
+            <p style="font-size: 13px; color: #8b949e;">يرجى ملء البيانات التالية لحفظ وتصدير الملف</p>
         </div>
 
-        <!-- 2. شاشة خيارات التنزيل (لا تفتح إلا بعد ملء الاستمارة) -->
-        <div id="optionsScreen">
-            <div class="header">
-                <div class="brand">تم حفظ البيانات بنجاح</div>
-                <div class="success-msg">✓ شكراً لك، يمكنك الآن تحميل أو إرسال الملف</div>
+        <!-- الفيلدات والفورم بتفتح مباشرة -->
+        <form id="designForm" onsubmit="handleFormSubmit(event)">
+            <div class="form-group">
+                <label>الاسم بالكامل</label>
+                <input type="text" id="clientName" required placeholder="أدخل اسم العميل / الشركة">
+            </div>
+            
+            <div class="form-group">
+                <label>رقم الهاتف / الواتساب</label>
+                <input type="tel" id="clientPhone" required placeholder="01xxxxxxxxx">
             </div>
 
-            <!-- خيار التحميل المباشر -->
-            <a href="design-file.png" download="Design_File.png" class="btn-action btn-download">
-                📥 تحميل الملف مباشر على الجهاز
-            </a>
+            <div class="form-group">
+                <label>تفاصيل التصميم / الطلب</label>
+                <textarea id="projectDetails" rows="4" required placeholder="اكتب كل التفاصيل والشروط هنا..."></textarea>
+            </div>
 
-            <!-- خيار الإرسال عبر واتساب -->
-            <button class="btn-action btn-whatsapp" onclick="shareToWhatsApp()">
-                📲 إرسال / مشاركة عبر واتساب
-            </button>
+            <button type="submit" class="btn-submit" id="submitBtn">📄 حفظ وتوليد ملف PDF وحفظ البيانات</button>
+        </form>
+
+        <!-- يظهر فوراً بعد الضغط على إرسال -->
+        <div id="successSection">
+            <p style="color: #3fb950; font-weight: bold; margin-bottom: 10px;">✓ تم تحميل ملف الـ PDF بنجاح على جهازك!</p>
+            <button class="btn-whatsapp" onclick="sendViaWhatsApp()">📲 إرسال التفاصيل عبر الواتساب</button>
         </div>
 
         <div class="footer">
@@ -72,33 +65,37 @@
     </div>
 
     <script>
-        function saveAndSubmitData(e) {
+        function handleFormSubmit(e) {
             e.preventDefault();
             
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value;
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = 'جاري إنشـاء الـ PDF... ⏳';
+            btn.disabled = true;
 
-            // حفظ البيانات في متصفح المستخدم (مؤقتاً)
-            localStorage.setItem('userData', JSON.stringify({ name, phone }));
+            // 1. إنشاء وتحميل ملف الـ PDF تلقائياً
+            const element = document.getElementById('pdfContent');
+            const opt = {
+                margin:       10,
+                filename:     `Design_Brief_${Date.now()}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
 
-            // إخفاء الاستمارة وإظهار زر التحميل والواتساب
-            document.getElementById('formScreen').style.display = 'none';
-            document.getElementById('optionsScreen').style.display = 'block';
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerText = '✓ تم الحفظ وتنزيل الـ PDF';
+                document.getElementById('successSection').style.display = 'block';
+            });
         }
 
-        function shareToWhatsApp() {
-            const savedData = JSON.parse(localStorage.getItem('userData')) || {};
-            const textMsg = `مرحباً، تم تسجيل البيانات:\n- الاسم: ${savedData.name || ''}\n- الهاتف: ${savedData.phone || ''}\n\nرابط الملف: ${window.location.href}`;
+        function sendViaWhatsApp() {
+            const name = document.getElementById('clientName').value;
+            const phone = document.getElementById('clientPhone').value;
+            const details = document.getElementById('projectDetails').value;
 
-            if (navigator.share) {
-                navigator.share({
-                    title: 'بيانات الملف',
-                    text: textMsg,
-                    url: window.location.href
-                }).catch(() => {});
-            } else {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textMsg)}`, '_blank');
-            }
+            const textMsg = `مرحباً، تم حفظ تفاصيل التصميم بنجاح:\n\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📝 التفاصيل:\n${details}`;
+            
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textMsg)}`, '_blank');
         }
     </script>
 
